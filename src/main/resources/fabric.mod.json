@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "healthyhealth",
+  "version": "1.0.0",
+  
+  "name": "Healthyhealth",
+  "description": "Mod Description.",
+  "authors": [
+    "Me!"
+  ],
+  
+  "icon": "assets/healthyhealth/icon.png",
+  "license": "No Licence.",
+  
+  "environment": "*",
+  
+  "entrypoints": {
+    "main": [
+      "valoeghese.healthyhealth.Healthyhealth"
+    ]
+  },
+  
+  "requires": {
+    "fabricloader": ">=0.4.0"
+  },
+  
+  "mixins": [
+    "healthyhealth.mixins.json"
+  ]
+}
