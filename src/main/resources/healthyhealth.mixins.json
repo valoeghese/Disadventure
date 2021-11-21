@@ -3,6 +3,9 @@
   "package": "valoeghese.healthyhealth.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "MixinFoodItem",
+    "MixinNHSSystems",
+    "MixinPlayer"
   ],
   "client": [
     "MixinNHSDisplay"
