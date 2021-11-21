@@ -21,6 +21,13 @@ public abstract class MixinFoodItem {
 
 	@Shadow public abstract boolean isEdible();
 
+	@Inject(at = @At("HEAD"), method = "getMaxStackSize", cancellable = true)
+	public void getMaxStackSize(CallbackInfoReturnable<Integer> info) {
+		if (this.isEdible()) {
+			info.setReturnValue(1);
+		}
+	}
+
 	@Inject(at = @At("HEAD"), method = "use", cancellable = true)
 	public void use(Level level, Player player, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> info) {
 		if (this.isEdible()) {
@@ -28,6 +35,7 @@ public abstract class MixinFoodItem {
 
 			if (player.canEat(this.getFoodProperties().canAlwaysEat())) {
 				player.heal(this.getFoodProperties().getNutrition());
+				itemStack.shrink(1);
 				info.setReturnValue(InteractionResultHolder.consume(itemStack));
 			} else {
 				info.setReturnValue(InteractionResultHolder.fail(itemStack));
