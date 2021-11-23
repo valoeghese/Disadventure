@@ -57,6 +57,7 @@ public abstract class MixinNHSDisplay {
 	}
 
 	// TODO flip half-armour image. it seems like it's meant to be that way anyway
+	// the reason we're doing it this absolutely cursed way is because the y position scaling with wacky rows is built in and I don't want to rewrite that
 	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;blit(Lcom/mojang/blaze3d/vertex/PoseStack;IIIIII)V"))
 	private void screwWithEverything(Gui guiComponent, PoseStack poseStack, int x, int y, int u, int v, int xsize, int ysize) {
 		// air: 16,25 | 18
@@ -73,6 +74,8 @@ public abstract class MixinNHSDisplay {
 			default:
 				break;
 			}
+		} else if (v == 18) {
+
 		}
 
 		guiComponent.blit(poseStack, x, y, u, v, xsize, ysize);
