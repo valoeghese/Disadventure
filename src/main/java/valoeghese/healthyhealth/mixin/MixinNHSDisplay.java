@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Overlay;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -39,24 +40,25 @@ public abstract class MixinNHSDisplay {
 		return this.getVisibleVehicleHeartRows(i == 42069 ? 0 : i);
 	}
 
-	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getArmorValue()I"))
-	private int makeArmourValueAir(LivingEntity entity) {
+	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getArmorValue()I"))
+	private int makeArmourValueAir(Player entity) {
 		int maxAir = entity.getMaxAirSupply();
 		int trueAir = entity.getAirSupply();
+		boolean wateryMan = entity.isEyeInFluid(FluidTags.WATER);
 
-		if (trueAir >= maxAir && !entity.isEyeInFluid(FluidTags.WATER)) {
+		if (trueAir >= maxAir && !wateryMan) {
 			return 0;
 		}
 
 		float progress = (float)trueAir / (float)maxAir;
 		int roundedResult = Mth.ceil(progress * 10.0f);
 
-		return roundedResult * 2 + (progress % 0.1f > 0.075f ? 1 : 0);
+		return roundedResult * 2 + (wateryMan && progress % 0.1f > 0.0875f ? 1 : 0);
 	}
 
 	// TODO flip half-armour image. it seems like it's meant to be that way anyway
-	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiComponent;blit(Lcom/mojang/blaze3d/vertex/PoseStack;IIIIII)V"))
-	private void screwWithEverything(GuiComponent guiComponent, PoseStack poseStack, int x, int y, int u, int v, int xsize, int ysize) {
+	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;blit(Lcom/mojang/blaze3d/vertex/PoseStack;IIIIII)V"))
+	private void screwWithEverything(Gui guiComponent, PoseStack poseStack, int x, int y, int u, int v, int xsize, int ysize) {
 		// air: 16,25 | 18
 		// armour: 16,25,34 | 9
 		if (v == 9) { // if trying to render armour
