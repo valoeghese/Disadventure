@@ -27,7 +27,7 @@ public abstract class MixinNHSDisplay {
 	protected abstract int getVisibleVehicleHeartRows(int i);
 
 	@Redirect(method = "renderPlayerHealth", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;getVehicleMaxHearts(Lnet/minecraft/world/entity/LivingEntity;)I"))
-	private int disableHungerRendering(Gui gui, LivingEntity entity) {
+	private int makeHungerRenderBecauseItsActuallyArmourNowGetRekt(Gui gui, LivingEntity entity) {
 		if (entity == null || !entity.showVehicleHealth()) {
 			return 42069;
 		} else {
@@ -75,10 +75,14 @@ public abstract class MixinNHSDisplay {
 				break;
 			}
 		} else if (v == 18) {
+			switch (u) {
 
+			}
 		}
 
 		guiComponent.blit(poseStack, x, y, u, v, xsize, ysize);
 	}
+
+	// on second thought why did I choose to implement it this way
 
 }
